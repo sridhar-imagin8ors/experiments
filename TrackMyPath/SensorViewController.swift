@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreMotion
+import MessageUI
 
-class SensorViewController: UIViewController {
+class SensorViewController: UIViewController , MFMailComposeViewControllerDelegate{
     var manager :CMMotionManager?
     var queue :NSOperationQueue?
     
@@ -17,139 +18,84 @@ class SensorViewController: UIViewController {
     
     //FIXME Move the points to a structure
     @IBOutlet weak var mailTextLabel: UILabel!
-    var correctionX:Double = 0.0
-    var correctionY:Double = 0.0
-    var correctionZ:Double = 0.0
-    var correctionCount = 1024.0
+    var correction = Point()
+    let correctionCount = 64.0
     var calibrationSeekBar = 0.0
     
-    var maxX = 0.0
-    var maxY = 0.0
-    var maxZ = 0.0
-    var minX = -0.0
-    var minY = -0.0
-    var minZ = -0.0
-    
-    var currAX:Double = 0.0
-    var currAY:Double = 0.0
-    var currAZ:Double = 0.0
-    var prevAX:Double = 0.0
-    var prevAY:Double = 0.0
-    var prevAZ:Double = 0.0
-    
-    var currVX:Double = 0.0
-    var currVY:Double = 0.0
-    var currVZ:Double = 0.0
-    var prevVX:Double = 0.0
-    var prevVY:Double = 0.0
-    var prevVZ:Double = 0.0
-    
-    var currDX:Double = 0.0
-    var currDY:Double = 0.0
-    var currDZ:Double = 0.0
-    var prevDX:Double = 0.0
-    var prevDY:Double = 0.0
-    var prevDZ:Double = 0.0
+    var max = Point(x:3.0,y:3.0,z:3.0)
+    var min = Point(x:-3.0,y:-3.0,z:-3.0)
+    var acceleration = [Point(),Point()]
+    var velocity = [Point(),Point()]
+    var displacement = [Point(),Point()]
     
     var resetCount = 0
-    var resetWhenReach = 30
+    let resetWhenReach = 20
+    let updateFrequency = Utils.rnd(1/40, decimalPoint: 4)// sec
+    var filename = "track_data.txt"
+    var dumpdata:String = ""
+    var yawDegree:Int = 0
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("checking the load function bound")
-        manager = CMMotionManager()
+    
+    func doCalibrate(x:Double,y:Double,z:Double,yaw:int){
+        self.correction.x += x
+        self.correction.y += y
+        self.correction.z += z
+        if self.max.x < x { self.max.x = x }
+        if self.max.y < y { self.max.y = y }
         
-        queue = NSOperationQueue()
-        
-        
-        if self.manager!.deviceMotionAvailable {
-            let updateFrequency = 0.0167// sec
-            self.manager!.deviceMotionUpdateInterval = updateFrequency
-            self.manager?.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrame.XArbitraryZVertical, toQueue: queue!)
-                {
-                (data:CMDeviceMotion?,error:NSError?) in
-                if let d = data{
-                    //x,y,z = raw value
-                    let x = Utils.convertG2ms2(d.userAcceleration.x)
-                    let y = Utils.convertG2ms2(d.userAcceleration.y)
-                    let z = Utils.convertG2ms2(d.userAcceleration.z)
-                    //self.mailTextLabel.text = "Calibrating... Keep the device still"
-                    if self.calibrationRequired {
-                        self.doCalibrate(x,y:y,z:z)
-                        return
-                    }
-                  //  self.mailTextLabel.text = "Calibration Completed.\n Now you move the device"
-                   // self.mailTextLabel.text = "Collecting data"
-                    
-                    //x1,y1,z1 - Normalized value
-                    let x1 = (x < self.maxX && x > self.minX) ? 0 : x
-                    let y1 = (y < self.maxY && y > self.minY) ? 0 : y
-                    let z1 = (z < self.maxZ && z > self.minZ) ? 0 : z
-                    
-                    if x1 != 0  || y1 != 0 || z1 != 0 {
-                        self.currAX = x1
-                        self.currAY = y1
-                        self.currAZ = z1
-                       // print("\( x1 ) , \( y1 ), \( z1 ) ")
-                        //calculate velocity and distance
-                        self.currVX = self.prevVX + self.prevAX + ((self.currAX - self.prevAX)/2)
-                        self.currVY = self.prevVY + self.prevAY + ((self.currAY - self.prevAY)/2)
-                        self.currVZ = self.prevVZ + self.prevAZ + ((self.currAZ - self.prevAZ)/2)
-                        
-                        self.currDX = self.prevDX + self.prevVX + ((self.currVX - self.prevVX)/2)
-                        self.currDY = self.prevDY + self.prevVY + ((self.currVY - self.prevVY)/2)
-                        self.currDZ = self.prevDZ + self.prevVZ + ((self.currVZ - self.prevVZ)/2)
-                    
-                        if self.resetCount % self.resetWhenReach == 0 {
-                            self.prevAX = 0.0
-                            self.prevAY = 0.0
-                            self.prevAZ = 0.0
-                            
-                            self.prevVX = 0.0
-                            self.prevVY = 0.0
-                            self.prevVZ = 0.0
-                        } else {
-                            self.prevAX = self.currAX
-                            self.prevAY = self.currAY
-                            self.prevAZ = self.currAZ
-                            
-                            self.prevVX = self.currVX
-                            self.prevVY = self.currVY
-                            self.prevVZ = self.currVZ
-                        
-                        }
-                        self.prevDX = self.currDX
-                        self.prevDY = self.currDY
-                        self.prevDZ = self.currDZ
-                        self.resetCount++
-
-                        
-                        print("\(Int(Utils.rnd(self.currDX,decimalPoint:0))) , \(Int(Utils.rnd(self.currDY,decimalPoint:0))) , \(Int(Utils.rnd(self.currDZ,decimalPoint:0))) " )
-                    }
-                }
-            }
+        if self.max.z < z { self.max.z = z }
+        if self.min.x > x { self.min.x = x }
+        if self.min.y > y { self.min.y = y }
+        if self.min.z > z { self.min.z = z }
+        self.yawDegree += self.yawDegree
+        self.calibrationSeekBar++
+        if self.calibrationSeekBar >= self.correctionCount{
+            self.calibrationRequired = false
+            self.correction.x /= Double(self.correctionCount)
+            self.correction.y /= Double(self.correctionCount)
+            self.correction.z /= Double(self.correctionCount)
+            print("correction value \(self.correction.x),\(self.correction.y),\(self.correction.z)")
+            print("max value \(self.max.x),\(self.max.y),\(self.max.z)")
+            print("min value \(self.min.x),\(self.min.y),\(self.min.z)")
+            //mailTextLabel.text = " Calibrated. Lets go for a walk"
         }
         
     }
     
-    func doCalibrate(x:Double,y:Double,z:Double){
-        self.correctionX += x
-        self.correctionY += y
-        self.correctionZ += z
-        if maxX < x { maxX = x }
-        if maxY < y { maxY = y }
-        if maxZ < z { maxZ = z }
-        if minX > x { minX = x }
-        if minY > y { minY = y }
-        if minZ > z { minZ = z }
-        self.calibrationSeekBar++
-        if self.calibrationSeekBar >= self.correctionCount{
-            self.calibrationRequired = false
-            self.correctionX /= Double(self.correctionCount)
-            self.correctionY /= Double(self.correctionCount)
-            self.correctionZ /= Double(self.correctionCount)
-            print("correction value \(self.correctionX),\(self.correctionY),\(self.correctionZ)")
+    @IBAction func stopTracking(sender: UIButton) {
+        if let mgr = self.manager{
+            mgr.stopDeviceMotionUpdates()
+        }
+    }
+    
+    
+    @IBAction func sendMail(sender: UIButton) {
+        
+        if let dir : NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
+            let path = dir.stringByAppendingPathComponent(self.filename);
             
+            //writing
+            do {
+                try self.dumpdata.writeToFile(path, atomically: false, encoding: NSUTF8StringEncoding)
+            }
+            catch {/* error handling here */}
+            
+            if( MFMailComposeViewController.canSendMail() ) {
+                print("Can send email.")
+                let mailComposer = MFMailComposeViewController()
+                mailComposer.mailComposeDelegate = self
+                mailComposer.setSubject("Sample data")
+                mailComposer.setMessageBody("Hi, User grapher in the mac to present it in graph view. Thanks", isHTML: false)
+                if let fileData = NSData(contentsOfFile: path) {
+                    print("File data loaded.")
+                    mailComposer.addAttachmentData(fileData, mimeType: "text/plain", fileName: "Sample Data.txt")
+                    self.presentViewController(mailComposer, animated: true, completion: nil)
+                }
+            }else{
+                let objectsToShare = [self.dumpdata]
+                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                self.presentViewController(activityVC, animated: true, completion: nil)
+            }
             
         }
         
@@ -159,6 +105,89 @@ class SensorViewController: UIViewController {
             mgr.stopDeviceMotionUpdates()
         }
     }
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        print("checking the load function bound")
+        manager = CMMotionManager()
+        dumpdata = ""
+        queue = NSOperationQueue()
         
+        
+        if self.manager!.deviceMotionAvailable {
+            
+            self.manager!.deviceMotionUpdateInterval = self.updateFrequency
+            self.manager?.startDeviceMotionUpdatesToQueue(queue!)
+                {
+                    (data:CMDeviceMotion?,error:NSError?) in
+                    if let d = data{
+                        //x,y,z = raw value
+                        let a = Point(x: 0.0,y:Utils.convertG2ms2(d.userAcceleration.y), z:0.0)
+                        //self.mailTextLabel.text = "Calibrating... Keep the device still"
+                        if self.calibrationRequired {
+                            self.doCalibrate(a.x,y:a.y,z:a.z,Int(MUtils.radianToDegrees(d.attitude.yaw)))
+                            return
+                        }
+                        //  self.mailTextLabel.text = "Calibration Completed.\n Now you move the device"
+                        // self.mailTextLabel.text = "Collecting data"
+                        
+                        
+                        //x1,y1,z1 - Normalized value
+                        let x1 = (a.x + self.correction.x < self.max.x && a.x  + self.correction.x > self.min.x) ? 0 : a.x  + self.correction.x
+                        let y1 = (a.y + self.correction.y < self.max.y && a.y  + self.correction.y > self.min.y) ? 0 : a.y  + self.correction.y
+                        let z1 = (a.z + self.correction.z < self.max.y && a.z  + self.correction.z > self.min.z) ? 0 : a.z  + self.correction.z
+                        
+                        if x1 != 0  || y1 != 0 || z1 != 0 {
+                            
+                            switch(MUtils.radianToDegrees(d.attitude.yaw)){
+                                case
+                            }
+                            self.acceleration[1].x = x1
+                            self.acceleration[1].y = y1
+                            self.acceleration[1].z = z1
+                            // print(" acceleration : \( a.dump() )  ")
+                            //calculate velocity and distance
+                            //delta v = va x t
+                            //va = vi+vf/2
+                            //vf = at
+                            //va = vi +at/2
+                            //delta v = vit + at^2/2
+                            self.velocity[1].x = self.velocity[0].x  + self.acceleration[0].x + ((self.acceleration[1].x - self.acceleration[0].x )/2)
+                            self.velocity[1].y = self.velocity[0].y  + self.acceleration[0].y + ((self.acceleration[1].y - self.acceleration[0].y )/2)
+                            self.velocity[1].z = self.velocity[0].z  + self.acceleration[0].z + ((self.acceleration[1].z - self.acceleration[0].z )/2)
+                            
+                            //delta displacement = di t + delta v * t
+                            self.displacement[1].x = self.displacement[0].x  + self.velocity[0].x + ((self.velocity[1].x - self.velocity[0].x )/2)
+                            self.displacement[1].y = self.displacement[0].y  + self.velocity[0].y + ((self.velocity[1].y - self.velocity[0].y )/2)
+                            self.displacement[1].z = self.displacement[0].z  + self.velocity[0].z + ((self.velocity[1].z - self.velocity[0].z )/2)
+                            
+                            self.acceleration[0] = self.acceleration[1]
+                            self.velocity[0] = self.velocity[1]
+                            self.displacement[0] = self.displacement[1]
+                            
+                            if(self.resetCount % self.resetWhenReach == 0){
+                                //make velocity == 0 after reset times
+                                self.velocity[0] = Point()
+                                self.acceleration[0] = Point()
+                                self.resetCount = 0
+                                print("reset")
+                            }
+                            if self.displacement[1].doesContainValue(){
+                                print("\(self.displacement[1].dump()),\(MUtils.radianToDegrees(d.attitude.yaw))")
+                                self.dumpdata += self.displacement[1].dump() + "\n"
+                            }
+                            self.resetCount++
+                        } else {
+                            //no acceleration
+                            self.resetCount++
+                        }
+                     }
+            }
+        }
+    }
 }
 

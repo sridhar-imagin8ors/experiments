@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A50B37BD1BBB06EE00654593 /* MUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B37BC1BBB06EE00654593 /* MUtils.swift */; settings = {ASSET_TAGS = (); }; };
 		A50B37BF1BBB098C00654593 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B37BE1BBB098C00654593 /* Utils.swift */; settings = {ASSET_TAGS = (); }; };
+		A52A62891BD2CDE0008164D9 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52A62881BD2CDE0008164D9 /* Point.swift */; settings = {ASSET_TAGS = (); }; };
 		A5346B101BB51AE600726C78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5346B0F1BB51AE600726C78 /* AppDelegate.swift */; };
 		A5346B121BB51AE600726C78 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5346B111BB51AE600726C78 /* ViewController.swift */; };
 		A5346B151BB51AE600726C78 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5346B131BB51AE600726C78 /* Main.storyboard */; };
@@ -21,6 +22,7 @@
 		A50B37BB1BB99BB600654593 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		A50B37BC1BBB06EE00654593 /* MUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MUtils.swift; sourceTree = "<group>"; };
 		A50B37BE1BBB098C00654593 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		A52A62881BD2CDE0008164D9 /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		A5346B0C1BB51AE600726C78 /* TrackMyPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackMyPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5346B0F1BB51AE600726C78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5346B111BB51AE600726C78 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				A50B37BB1BB99BB600654593 /* MyPlayground.playground */,
 				A50B37BC1BBB06EE00654593 /* MUtils.swift */,
 				A50B37BE1BBB098C00654593 /* Utils.swift */,
+				A52A62881BD2CDE0008164D9 /* Point.swift */,
 			);
 			path = TrackMyPath;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 			files = (
 				A50B37BF1BBB098C00654593 /* Utils.swift in Sources */,
 				A5346B121BB51AE600726C78 /* ViewController.swift in Sources */,
+				A52A62891BD2CDE0008164D9 /* Point.swift in Sources */,
 				A50B37BD1BBB06EE00654593 /* MUtils.swift in Sources */,
 				A5346B101BB51AE600726C78 /* AppDelegate.swift in Sources */,
 				A5346B221BB526E000726C78 /* SensorViewController.swift in Sources */,

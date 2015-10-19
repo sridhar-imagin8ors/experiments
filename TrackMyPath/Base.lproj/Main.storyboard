@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Hy7-wx-avz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -19,7 +20,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lZV-2Q-rxz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2671" y="179"/>
+            <point key="canvasLocation" x="-2647" y="155"/>
         </scene>
         <!--Sensor View Controller-->
         <scene sceneID="Qnr-QS-k7e">
@@ -40,12 +41,33 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="See-dM-ReG">
+                                <rect key="frame" x="20" y="486" width="324" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Stop"/>
+                                <connections>
+                                    <action selector="stopTracking:" destination="p2A-oY-u7K" eventType="touchUpInside" id="S7o-4X-BBM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Avo-aE-01w">
+                                <rect key="frame" x="504" y="486" width="76" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Send Email"/>
+                                <connections>
+                                    <action selector="sendMail:" destination="p2A-oY-u7K" eventType="touchUpInside" id="lY8-K9-I3c"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="See-dM-ReG" firstAttribute="leading" secondItem="hgo-8W-rXs" secondAttribute="leadingMargin" constant="20" id="14x-bI-bUq"/>
+                            <constraint firstItem="HCN-au-KK4" firstAttribute="top" secondItem="Avo-aE-01w" secondAttribute="bottom" constant="100" id="HMU-sv-4m3"/>
                             <constraint firstItem="NYT-ut-gzx" firstAttribute="centerX" secondItem="hgo-8W-rXs" secondAttribute="centerX" id="NLV-US-I5u"/>
                             <constraint firstItem="NYT-ut-gzx" firstAttribute="centerY" secondItem="hgo-8W-rXs" secondAttribute="centerY" id="fqX-P7-8c2"/>
+                            <constraint firstItem="HCN-au-KK4" firstAttribute="top" secondItem="See-dM-ReG" secondAttribute="bottom" constant="100" id="lI6-5d-acf"/>
+                            <constraint firstItem="Avo-aE-01w" firstAttribute="leading" secondItem="See-dM-ReG" secondAttribute="trailing" constant="100" id="rrT-Ce-yO3"/>
+                            <constraint firstItem="See-dM-ReG" firstAttribute="width" secondItem="Avo-aE-01w" secondAttribute="width" id="vVv-Op-Yh6"/>
                         </constraints>
                     </view>
                     <connections>
@@ -54,7 +76,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YGv-OP-GIQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1158" y="199"/>
+            <point key="canvasLocation" x="-1158" y="161"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -100,7 +122,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1992" y="161"/>
+            <point key="canvasLocation" x="-1904" y="169"/>
         </scene>
     </scenes>
 </document>

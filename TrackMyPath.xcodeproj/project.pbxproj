@@ -19,7 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A50B37BB1BB99BB600654593 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		A50B37BC1BBB06EE00654593 /* MUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MUtils.swift; sourceTree = "<group>"; };
 		A50B37BE1BBB098C00654593 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		A52A62881BD2CDE0008164D9 /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
@@ -70,7 +69,6 @@
 				A5346B181BB51AE600726C78 /* LaunchScreen.storyboard */,
 				A5346B1B1BB51AE600726C78 /* Info.plist */,
 				A5346B211BB526E000726C78 /* SensorViewController.swift */,
-				A50B37BB1BB99BB600654593 /* MyPlayground.playground */,
 				A50B37BC1BBB06EE00654593 /* MUtils.swift */,
 				A50B37BE1BBB098C00654593 /* Utils.swift */,
 				A52A62881BD2CDE0008164D9 /* Point.swift */,

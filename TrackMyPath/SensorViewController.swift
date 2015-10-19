@@ -34,9 +34,10 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
     var filename = "track_data.txt"
     var dumpdata:String = ""
     var yawDegree:Int = 0
+    let degreeBand:Int = 5
     
     
-    func doCalibrate(x:Double,y:Double,z:Double,yaw:int){
+    func doCalibrate(x:Double,y:Double,z:Double,yaw:Int){
         self.correction.x += x
         self.correction.y += y
         self.correction.z += z
@@ -54,7 +55,11 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
             self.correction.x /= Double(self.correctionCount)
             self.correction.y /= Double(self.correctionCount)
             self.correction.z /= Double(self.correctionCount)
-            print("correction value \(self.correction.x),\(self.correction.y),\(self.correction.z)")
+            self.yawDegree /= Int(self.correctionCount)
+            //            if self.yawDegree < 0{
+            //                self.yawDegree + 360
+            //            }
+            print("correction value \(self.correction.x),\(self.correction.y),\(self.correction.z), y reference angle : \( self.yawDegree)")
             print("max value \(self.max.x),\(self.max.y),\(self.max.z)")
             print("min value \(self.min.x),\(self.min.y),\(self.min.z)")
             //mailTextLabel.text = " Calibrated. Lets go for a walk"
@@ -127,9 +132,11 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
                     if let d = data{
                         //x,y,z = raw value
                         let a = Point(x: 0.0,y:Utils.convertG2ms2(d.userAcceleration.y), z:0.0)
+                        //print("\(Int(MUtils.radianToDegrees(d.attitude.yaw))) , \(d.attitude.yaw)")
                         //self.mailTextLabel.text = "Calibrating... Keep the device still"
                         if self.calibrationRequired {
-                            self.doCalibrate(a.x,y:a.y,z:a.z,Int(MUtils.radianToDegrees(d.attitude.yaw)))
+                            
+                            self.doCalibrate(a.x,y:a.y,z:a.z,yaw:Int(MUtils.radianToDegrees(d.attitude.yaw)))
                             return
                         }
                         //  self.mailTextLabel.text = "Calibration Completed.\n Now you move the device"
@@ -138,16 +145,54 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
                         
                         //x1,y1,z1 - Normalized value
                         let x1 = (a.x + self.correction.x < self.max.x && a.x  + self.correction.x > self.min.x) ? 0 : a.x  + self.correction.x
-                        let y1 = (a.y + self.correction.y < self.max.y && a.y  + self.correction.y > self.min.y) ? 0 : a.y  + self.correction.y
+                        var y1 = (a.y + self.correction.y < self.max.y && a.y  + self.correction.y > self.min.y) ? 0 : a.y  + self.correction.y
                         let z1 = (a.z + self.correction.z < self.max.y && a.z  + self.correction.z > self.min.z) ? 0 : a.z  + self.correction.z
                         
                         if x1 != 0  || y1 != 0 || z1 != 0 {
-                            
-                            switch(MUtils.radianToDegrees(d.attitude.yaw)){
-                                case
+                            //                            let p = self.get45DegreeMinus(self.yawDegree)
+                            //                            let degreeNinty1:Int = self.get90Degree(p)[0]
+                            //                            let degreeNinty2:Int = self.get90Degree(p)[1]
+                            //                            let degreeOneEighty1:Int = self.get90Degree(degreeNinty1)[0]
+                            //                            let degreeOneEighty2:Int = self.get90Degree(degreeNinty1)[1]
+                            var yBy:Bool = true
+                            var isForward:Bool = true
+                            var currDegree = Int(MUtils.radianToDegrees(d.attitude.yaw)) + self.yawDegree
+                            currDegree = currDegree < 0 ? currDegree + 360 : currDegree
+                            if (45 > currDegree && currDegree >= 0 ) || (359 >= currDegree && currDegree >= 315){
+                                isForward = true
+                                yBy = true
+                                //print("y")
+                            } else if (135 <= currDegree && currDegree < 225){
+                                yBy = true
+                                isForward = false
+                                //print("-y")
+                            } else if (225 <= currDegree && currDegree < 315){
+                                yBy = false
+                                isForward = true
+                                //print("x")
+                            }else if (45 <= currDegree && currDegree < 135){
+                                isForward = false
+                                yBy = false
+                                print("-x")
+                            } else{
+                                print(" fixme - I am not suppose to be here  \(Int(MUtils.radianToDegrees(d.attitude.yaw)))" )
                             }
-                            self.acceleration[1].x = x1
-                            self.acceleration[1].y = y1
+                            
+                            if !isForward{
+                                y1 = abs(y1) * -1
+                            }else{
+                                y1 = abs(y1)
+                            }
+                            
+                            if yBy {
+                                self.acceleration[1].x = x1
+                                self.acceleration[1].y = y1
+                                
+                            } else {
+                                self.acceleration[1].x = y1
+                                self.acceleration[1].y = x1
+                                
+                            }
                             self.acceleration[1].z = z1
                             // print(" acceleration : \( a.dump() )  ")
                             //calculate velocity and distance
@@ -174,10 +219,10 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
                                 self.velocity[0] = Point()
                                 self.acceleration[0] = Point()
                                 self.resetCount = 0
-                                print("reset")
+                                //print("reset")
                             }
                             if self.displacement[1].doesContainValue(){
-                                print("\(self.displacement[1].dump()),\(MUtils.radianToDegrees(d.attitude.yaw))")
+                                //print("\(self.displacement[1].dump()),\(MUtils.radianToDegrees(d.attitude.yaw))")
                                 self.dumpdata += self.displacement[1].dump() + "\n"
                             }
                             self.resetCount++
@@ -185,9 +230,10 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
                             //no acceleration
                             self.resetCount++
                         }
-                     }
+                    }
             }
         }
     }
+    
 }
 

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import MessageUI
+
 class Utils {
     static let g2ms2 = 98.0
     static func rnd(val:Double, decimalPoint:Int = 2) -> Double{
@@ -18,67 +20,34 @@ class Utils {
         return Utils.rnd(val * Utils.g2ms2)
     }
     
-    static func get90Degree(d:Int)->[Int]{
-        
-        var res:[Int] = [0,0]
-        if d < 0 {
-            if (d + 90 < 0){
-                res[0] = d + 90
-                res[1] = res[0] + 180
-            } else {
-                res[1] = d + 90
-                res[0] = res[1] + 180
+    static func sendMail(viewController:UIViewController, delegate:MFMailComposeViewControllerDelegate, fileName: String, data:String){
+        if let dir : NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
+            let path = dir.stringByAppendingPathComponent(fileName);
+            
+            //writing
+            do {
+                try data.writeToFile(path, atomically: false, encoding: NSUTF8StringEncoding)
             }
-        } else {
-            if (d - 90 < 0){
-                res[0] = d - 90
-                res[1] = res[0] + 180
-            } else {
-                res[1] = d - 90
-                res[0] = res[1] - 180
+            catch {/* error handling here */}
+            
+            if( MFMailComposeViewController.canSendMail() ) {
+                print("Can send email.")
+                let mailComposer = MFMailComposeViewController()
+                mailComposer.mailComposeDelegate = delegate
+                mailComposer.setSubject("Sample data")
+                mailComposer.setMessageBody("Hi, User grapher in the mac to present it in graph view. Thanks", isHTML: false)
+                if let fileData = NSData(contentsOfFile: path) {
+                    print("File data loaded.")
+                    mailComposer.addAttachmentData(fileData, mimeType: "text/plain", fileName: "Sample Data.txt")
+                    viewController.presentViewController(mailComposer, animated: true, completion: nil)
+                }
+            }else{
+                let objectsToShare = [data]
+                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                viewController.presentViewController(activityVC, animated: true, completion: nil)
             }
             
         }
-        return res
-    }
-    static func get45DegreePlus(d:Int) -> Int{
-        let res = d + 45
-        return res > 180 ? (res - 360) : res
-    }
-    static func get45DegreeMinus(d:Int) -> Int{
-        let res = d - 44
-        return res < -180 ? (res + 360) : res
-    }
-    
-    static func isInside(low:Int, high:Int , deg: Int) -> Bool{
-        print(" \(low) \(high) \(deg)")
-        let deg = deg < 0 ? deg + 360 : deg
-        let l = low < 0 ? low + 360 : low
-        let h = high < 0 ? high + 360 : high
-        
-        if  l > h  { // high move to 0 degree and low is with in 360
-            if (deg >= 0 && deg <= h){
-                print("true")
-                return true
-            } else if (deg >= l && deg >= 359) {
-                print("true")
-                return true
-            } else if (deg >= h && deg <= l){
-                print("true")
-                return true
-                
-            } else {
-                print("false")
-                return false
-            }
-        } else{
-            if deg >= l && deg <= h {
-                print("true")
-                return true
-            }
-        }
-        print("false")
-        return false
     }
 
 }

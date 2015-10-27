@@ -12,6 +12,9 @@ class MUtils{
     static func  radianToDegrees(radians:Double) -> Double {
         return Utils.rnd((radians * 57.2958),decimalPoint: 0)
     }
+    static func  degreesToRadian(degree:Double) -> Double {
+        return degree * 0.0174533
+    }
     static func  getDisplacment(v0 : Double, a:Double, t:Double) -> Double{
         return Utils.rnd((v0 * t + (0.5 * a * t * t)) * 100) //in cm
     }

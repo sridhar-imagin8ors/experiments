@@ -10,6 +10,7 @@
 		A50B37BD1BBB06EE00654593 /* MUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B37BC1BBB06EE00654593 /* MUtils.swift */; };
 		A50B37BF1BBB098C00654593 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B37BE1BBB098C00654593 /* Utils.swift */; };
 		A5286E421BDF52D80083FD16 /* makeSomeNoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5286E411BDF52D80083FD16 /* makeSomeNoice.swift */; };
+		A5286E451BDF6D760083FD16 /* MusicUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5286E441BDF6D760083FD16 /* MusicUtils.swift */; };
 		A52A62891BD2CDE0008164D9 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = A52A62881BD2CDE0008164D9 /* Point.swift */; };
 		A5346B101BB51AE600726C78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5346B0F1BB51AE600726C78 /* AppDelegate.swift */; };
 		A5346B151BB51AE600726C78 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5346B131BB51AE600726C78 /* Main.storyboard */; };
@@ -17,13 +18,14 @@
 		A5346B221BB526E000726C78 /* SensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5346B211BB526E000726C78 /* SensorViewController.swift */; };
 		A5EA7BE81BDF436F0052B080 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5EA7BE71BDF436F0052B080 /* Config.swift */; };
 		A5EA7BEB1BDF4C250052B080 /* raga-abheri-arohanam_avarohanam.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A5EA7BE91BDF4C250052B080 /* raga-abheri-arohanam_avarohanam.mp3 */; };
-		A5EA7BEC1BDF4C250052B080 /* raga-mohanam-arohanam_avarohanam.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A5EA7BEA1BDF4C250052B080 /* raga-mohanam-arohanam_avarohanam.mp3 */; };
+		A5EA7BEC1BDF4C250052B080 /* mohanam.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A5EA7BEA1BDF4C250052B080 /* mohanam.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A50B37BC1BBB06EE00654593 /* MUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MUtils.swift; sourceTree = "<group>"; };
 		A50B37BE1BBB098C00654593 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		A5286E411BDF52D80083FD16 /* makeSomeNoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = makeSomeNoice.swift; sourceTree = "<group>"; };
+		A5286E441BDF6D760083FD16 /* MusicUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicUtils.swift; sourceTree = "<group>"; };
 		A52A62881BD2CDE0008164D9 /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		A5346B0C1BB51AE600726C78 /* TrackMyPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackMyPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5346B0F1BB51AE600726C78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -33,7 +35,7 @@
 		A5346B211BB526E000726C78 /* SensorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SensorViewController.swift; sourceTree = "<group>"; };
 		A5EA7BE71BDF436F0052B080 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		A5EA7BE91BDF4C250052B080 /* raga-abheri-arohanam_avarohanam.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "raga-abheri-arohanam_avarohanam.mp3"; sourceTree = "<group>"; };
-		A5EA7BEA1BDF4C250052B080 /* raga-mohanam-arohanam_avarohanam.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "raga-mohanam-arohanam_avarohanam.mp3"; sourceTree = "<group>"; };
+		A5EA7BEA1BDF4C250052B080 /* mohanam.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mohanam.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			children = (
 				A50B37BE1BBB098C00654593 /* Utils.swift */,
 				A50B37BC1BBB06EE00654593 /* MUtils.swift */,
+				A5286E441BDF6D760083FD16 /* MusicUtils.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -116,7 +119,7 @@
 		A5EA7BED1BDF4C300052B080 /* res */ = {
 			isa = PBXGroup;
 			children = (
-				A5EA7BEA1BDF4C250052B080 /* raga-mohanam-arohanam_avarohanam.mp3 */,
+				A5EA7BEA1BDF4C250052B080 /* mohanam.mp3 */,
 				A5EA7BE91BDF4C250052B080 /* raga-abheri-arohanam_avarohanam.mp3 */,
 			);
 			name = res;
@@ -180,7 +183,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5EA7BEC1BDF4C250052B080 /* raga-mohanam-arohanam_avarohanam.mp3 in Resources */,
+				A5EA7BEC1BDF4C250052B080 /* mohanam.mp3 in Resources */,
 				A5EA7BEB1BDF4C250052B080 /* raga-abheri-arohanam_avarohanam.mp3 in Resources */,
 				A5346B171BB51AE600726C78 /* Assets.xcassets in Resources */,
 				A5346B151BB51AE600726C78 /* Main.storyboard in Resources */,
@@ -199,6 +202,7 @@
 				A50B37BD1BBB06EE00654593 /* MUtils.swift in Sources */,
 				A5346B101BB51AE600726C78 /* AppDelegate.swift in Sources */,
 				A5346B221BB526E000726C78 /* SensorViewController.swift in Sources */,
+				A5286E451BDF6D760083FD16 /* MusicUtils.swift in Sources */,
 				A5EA7BE81BDF436F0052B080 /* Config.swift in Sources */,
 				A5286E421BDF52D80083FD16 /* makeSomeNoice.swift in Sources */,
 			);

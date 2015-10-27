@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Hy7-wx-avz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Hy7-wx-avz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -20,7 +19,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lZV-2Q-rxz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2647" y="155"/>
+            <point key="canvasLocation" x="-1231" y="235"/>
         </scene>
         <!--Sensor View Controller-->
         <scene sceneID="Qnr-QS-k7e">
@@ -34,49 +33,53 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Lets do some task here" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NYT-ut-gzx">
-                                <rect key="frame" x="90" y="264" width="178" height="21"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="See-dM-ReG">
+                                <rect key="frame" x="276" y="276" width="48" height="48"/>
                                 <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="See-dM-ReG">
-                                <rect key="frame" x="20" y="486" width="324" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Stop"/>
+                                <state key="normal" image="Play"/>
                                 <connections>
-                                    <action selector="stopTracking:" destination="p2A-oY-u7K" eventType="touchUpInside" id="S7o-4X-BBM"/>
+                                    <action selector="startTracking:" destination="p2A-oY-u7K" eventType="touchUpInside" id="BE6-V1-yoH"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Avo-aE-01w">
-                                <rect key="frame" x="504" y="486" width="76" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lee-Dq-c8Y">
+                                <rect key="frame" x="276" y="276" width="48" height="48"/>
                                 <animations/>
-                                <state key="normal" title="Send Email"/>
+                                <state key="normal" image="Stop"/>
+                                <connections>
+                                    <action selector="stopTracking:" destination="p2A-oY-u7K" eventType="touchUpInside" id="Nhd-wW-cKV"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Avo-aE-01w">
+                                <rect key="frame" x="262" y="374" width="76" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Send Email">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="sendMail:" destination="p2A-oY-u7K" eventType="touchUpInside" id="lY8-K9-I3c"/>
                                 </connections>
                             </button>
                         </subviews>
                         <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.35964776430917789" green="0.50892207997104477" blue="0.52392833769633518" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="See-dM-ReG" firstAttribute="leading" secondItem="hgo-8W-rXs" secondAttribute="leadingMargin" constant="20" id="14x-bI-bUq"/>
-                            <constraint firstItem="HCN-au-KK4" firstAttribute="top" secondItem="Avo-aE-01w" secondAttribute="bottom" constant="100" id="HMU-sv-4m3"/>
-                            <constraint firstItem="NYT-ut-gzx" firstAttribute="centerX" secondItem="hgo-8W-rXs" secondAttribute="centerX" id="NLV-US-I5u"/>
-                            <constraint firstItem="NYT-ut-gzx" firstAttribute="centerY" secondItem="hgo-8W-rXs" secondAttribute="centerY" id="fqX-P7-8c2"/>
-                            <constraint firstItem="HCN-au-KK4" firstAttribute="top" secondItem="See-dM-ReG" secondAttribute="bottom" constant="100" id="lI6-5d-acf"/>
-                            <constraint firstItem="Avo-aE-01w" firstAttribute="leading" secondItem="See-dM-ReG" secondAttribute="trailing" constant="100" id="rrT-Ce-yO3"/>
-                            <constraint firstItem="See-dM-ReG" firstAttribute="width" secondItem="Avo-aE-01w" secondAttribute="width" id="vVv-Op-Yh6"/>
+                            <constraint firstItem="See-dM-ReG" firstAttribute="centerY" secondItem="hgo-8W-rXs" secondAttribute="centerY" id="7BK-lt-H6t"/>
+                            <constraint firstItem="Lee-Dq-c8Y" firstAttribute="centerY" secondItem="hgo-8W-rXs" secondAttribute="centerY" id="7KF-o9-6Im"/>
+                            <constraint firstItem="Avo-aE-01w" firstAttribute="top" secondItem="Lee-Dq-c8Y" secondAttribute="bottom" constant="50" id="7yJ-j1-54p"/>
+                            <constraint firstItem="Lee-Dq-c8Y" firstAttribute="centerX" secondItem="hgo-8W-rXs" secondAttribute="centerX" id="ePP-t0-70A"/>
+                            <constraint firstItem="See-dM-ReG" firstAttribute="centerX" secondItem="hgo-8W-rXs" secondAttribute="centerX" id="g4e-GA-4Ge"/>
+                            <constraint firstItem="Avo-aE-01w" firstAttribute="centerX" secondItem="hgo-8W-rXs" secondAttribute="centerX" id="ktx-72-TIe"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="mailTextLabel" destination="NYT-ut-gzx" id="dwN-ce-GEo"/>
+                        <outlet property="btnPlay" destination="See-dM-ReG" id="xcf-xE-nnB"/>
+                        <outlet property="btnStop" destination="Lee-Dq-c8Y" id="dxp-MM-mqN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YGv-OP-GIQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1158" y="161"/>
+            <point key="canvasLocation" x="354" y="249"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -97,7 +100,7 @@
                                     <constraint firstAttribute="width" constant="238" id="AY2-Ly-0Fi"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QkW-2m-YMC">
@@ -122,7 +125,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1904" y="169"/>
+            <point key="canvasLocation" x="-472" y="289"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Play" width="48" height="48"/>
+        <image name="Stop" width="48" height="48"/>
+    </resources>
 </document>

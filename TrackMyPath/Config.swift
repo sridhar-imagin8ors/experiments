@@ -8,5 +8,9 @@
 
 import Foundation
 class Config{
-    static let FilterAngle = 45
+    static let FilterAngle = 5.0
+    static let missCountMax = 50
+    static let updateFrequency = Utils.rnd(1/40, decimalPoint: 4)// sec
+    static let FilterAngle2x = FilterAngle*2.0
+    static let noOfSectors = 360.0/Config.FilterAngle2x
 }

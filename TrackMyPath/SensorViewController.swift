@@ -16,7 +16,9 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
     
     var calibrationRequired:Bool = true
     
-    @IBOutlet weak var mailTextLabel: UILabel!
+    @IBOutlet weak var btnPlay: UIButton!
+    @IBOutlet weak var btnStop: UIButton!
+   
     
     var correction = Point()
     let correctionCount = 64.0
@@ -33,12 +35,27 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
     let updateFrequency = Utils.rnd(1/40, decimalPoint: 4)// sec
     var filename = "track_data.txt"
     var dumpdata:String = ""
-    var yawDegree:Int = 0
-    let degreeBand:Int = 5
+    var yawDegree = 0.0
     let useYaw = true
     
+    private func enablePlay(){
+        btnPlay.hidden = false
+        btnStop.hidden = true
+    }
     
-    func doCalibrate(x:Double,y:Double,z:Double,yaw:Int){
+    private func enableStop(){
+        btnPlay.hidden = true
+        btnStop.hidden = false
+    }
+    
+    func doCleanUp(){
+        enablePlay()
+        if let mgr = self.manager{
+            mgr.stopDeviceMotionUpdates()
+        }
+    }
+
+    private func doCalibrate(x:Double,y:Double,z:Double,yaw:Int){
         self.correction.x += x
         self.correction.y += y
         self.correction.z += z
@@ -56,7 +73,7 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
             self.correction.x /= Double(self.correctionCount)
             self.correction.y /= Double(self.correctionCount)
             self.correction.z /= Double(self.correctionCount)
-            self.yawDegree /= Int(self.correctionCount)
+            self.yawDegree /= self.correctionCount
             print("correction value \(self.correction.x),\(self.correction.y),\(self.correction.z), y reference angle : \( self.yawDegree)")
             print("max value \(self.max.x),\(self.max.y),\(self.max.z)")
             print("min value \(self.min.x),\(self.min.y),\(self.min.z)")
@@ -65,31 +82,8 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
         
     }
     
-    @IBAction func stopTracking(sender: UIButton) {
-        if let mgr = self.manager{
-            mgr.stopDeviceMotionUpdates()
-        }
-    }
     
-    
-    @IBAction func sendMail(sender: UIButton) {
-        
-        Utils.sendMail(self, delegate: self, fileName: self.filename, data: self.dumpdata)
-        
-    }
-    override func viewWillDisappear(animated: Bool) {
-        if let mgr = self.manager{
-            mgr.stopDeviceMotionUpdates()
-        }
-    }
-    
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("checking the load function bound")
+    @IBAction func startTracking(sender: UIButton) {
         manager = CMMotionManager()
         dumpdata = ""
         queue = NSOperationQueue()
@@ -100,6 +94,45 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
             self.manager?.startDeviceMotionUpdatesToQueue(queue!,withHandler:trackHandler)
             
         }
+        reset()
+        enableStop()
+        self.dumpdata = ""
+
+    }
+
+    
+    @IBAction func stopTracking(sender: UIButton) {
+       doCleanUp()
+       enablePlay()
+    }
+    
+    
+    @IBAction func sendMail(sender: UIButton) {
+        
+        Utils.sendMail(self, delegate: self, fileName: self.filename, data: self.dumpdata)
+        
+    }
+    override func viewWillDisappear(animated: Bool) {
+        doCleanUp()
+        
+    }
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        print("checking the load function bound")
+        enablePlay()
+    }
+    
+    private func reset(){
+        self.velocity[0] = Point()
+        self.acceleration[0] = Point()
+        self.displacement[0] = Point()
+        self.resetCount = 0
+
     }
     
     func trackHandler(data:CMDeviceMotion?,error:NSError?) {
@@ -107,7 +140,7 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
         if let d = data{
             
             //x,y,z = raw value
-            let a = Point(x: 0.0,y:Utils.convertG2ms2(d.userAcceleration.y), z:0.0)
+            let a = Point(x: Utils.convertG2ms2(d.userAcceleration.x),y:Utils.convertG2ms2(d.userAcceleration.y), z:0.0)
             //print("\(Int(MUtils.radianToDegrees(d.attitude.yaw))) , \(d.attitude.yaw)")
             //self.mailTextLabel.text = "Calibrating... Keep the device still",
             if self.calibrationRequired {
@@ -118,57 +151,19 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
             
             //x1,y1,z1 - Normalized value
             let x1 = (a.x + self.correction.x < self.max.x && a.x  + self.correction.x > self.min.x) ? 0 : a.x  + self.correction.x
-            var y1 = (a.y + self.correction.y < self.max.y && a.y  + self.correction.y > self.min.y) ? 0 : a.y  + self.correction.y
+            let y1 = (a.y + self.correction.y < self.max.y && a.y  + self.correction.y > self.min.y) ? 0 : a.y  + self.correction.y
             let z1 = (a.z + self.correction.z < self.max.y && a.z  + self.correction.z > self.min.z) ? 0 : a.z  + self.correction.z
             //FIXME Do refactor. Change to generic method
             if x1 != 0  || y1 != 0 || z1 != 0 {
-                var yBy:Bool = true
-                var isForward:Bool = true
-                var currDegree = (self.useYaw ? Int(MUtils.radianToDegrees(d.attitude.yaw)) : Int(MUtils.radianToDegrees(d.attitude.pitch))) + self.yawDegree
-               // print(currDegree)
-                currDegree = currDegree < 0 ? currDegree + 360 : currDegree
-                var currDegreeRnd = 0.0
-                if (45 > currDegree && currDegree >= 0 ) || (359 >= currDegree && currDegree >= 315){
-                    isForward = true
-                    yBy = true
-                    currDegreeRnd = MUtils.degreesToRadian(0.0)
-                    print("y")
-                } else if (135 <= currDegree && currDegree < 225){
-                    yBy = true
-                    isForward = false
-                    currDegreeRnd = MUtils.degreesToRadian(180.0)
-                    print("-y")
-                } else if (225 <= currDegree && currDegree < 315){
-                    yBy = false
-                    isForward = true
-                    currDegreeRnd = MUtils.degreesToRadian(90.0)
-                    print("x")
-                }else if (45 <= currDegree && currDegree < 135){
-                    isForward = false
-                    currDegreeRnd = MUtils.degreesToRadian(-90.0)
-                    yBy = false
-                    print("-x")
-                } else{
-                    print(" fixme - I am not suppose to be here  \(Int(MUtils.radianToDegrees(d.attitude.yaw)))" )
-                }
+                let yaw = d.attitude.yaw
+                let currDegree = (self.useYaw ? MUtils.radianToDegrees(yaw) : MUtils.radianToDegrees(d.attitude.pitch)) + self.yawDegree
                 
-                if !isForward{
-                    y1 = abs(y1) * -1
-                }else{
-                    y1 = abs(y1)
-                }
-                
-                if yBy {
-                    self.acceleration[1].x = x1
-                    self.acceleration[1].y = y1
-                    
-                } else {
-                    self.acceleration[1].x = y1
-                    self.acceleration[1].y = x1
-                    
-                }
-//                self.acceleration[1].x = y1 * cos(Double(currDegree))
-//                self.acceleration[1].y = y1 * sin(Double(currDegree))
+                let currDegreeRnd = MUtils.getNormalizedRadian(currDegree)
+
+                print(" Curr Degree \(currDegree) Normalized \(MUtils.radianToDegrees(currDegreeRnd))" )
+               // let magnitude = sqrt(pow(x1,2.0)+pow(y1,2.0))
+                self.acceleration[1].x = y1 * sin(currDegreeRnd)
+                self.acceleration[1].y = y1 * cos(currDegreeRnd)
                 self.acceleration[1].z = z1
                 // print(" acceleration : \( a.dump() )  ")
                 //calculate velocity and distance
@@ -192,12 +187,10 @@ class SensorViewController: UIViewController , MFMailComposeViewControllerDelega
                 
                 if(self.resetCount % self.resetWhenReach == 0){
                     //make velocity == 0 after reset times
-                    self.velocity[0] = Point()
-                    self.acceleration[0] = Point()
-                    self.resetCount = 0
+                    //reset()
                 }
                 if self.displacement[1].doesContainValue(){
-                   // print("\(self.displacement[1].dump())")
+                    print("\(self.displacement[1].dump())")
                     self.dumpdata += self.displacement[1].dump() + "\n"
                 }
                 self.resetCount++
